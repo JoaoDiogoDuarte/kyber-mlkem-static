@@ -14,7 +14,7 @@
 #define NTESTS 1000
 
 uint64_t t[NTESTS];
-uint8_t seed[KYBER_SYMBYTES] = {0};
+uint8_t seed[MLKEM_SYMBYTES] = {0};
 
 int main(void)
 {
@@ -23,13 +23,13 @@ int main(void)
   uint8_t sk[CRYPTO_SECRETKEYBYTES];
   uint8_t ct[CRYPTO_CIPHERTEXTBYTES];
   uint8_t key[CRYPTO_BYTES];
-  uint8_t coins32[KYBER_SYMBYTES];
-  uint8_t coins64[2*KYBER_SYMBYTES];
-  polyvec matrix[KYBER_K];
+  uint8_t coins32[MLKEM_SYMBYTES];
+  uint8_t coins64[2*MLKEM_SYMBYTES];
+  polyvec matrix[MLKEM_K];
   poly ap;
 
-  randombytes(coins32, KYBER_SYMBYTES);
-  randombytes(coins64, 2*KYBER_SYMBYTES);
+  randombytes(coins32, MLKEM_SYMBYTES);
+  randombytes(coins64, 2*MLKEM_SYMBYTES);
 
   for(i=0;i<NTESTS;i++) {
     t[i] = cpucycles();
@@ -125,31 +125,31 @@ int main(void)
     t[i] = cpucycles();
     crypto_kem_keypair_derand(pk, sk, coins64);
   }
-  print_results("kyber_keypair_derand: ", t, NTESTS);
+  print_results("mlkem_keypair_derand: ", t, NTESTS);
 
   for(i=0;i<NTESTS;i++) {
     t[i] = cpucycles();
     crypto_kem_keypair(pk, sk);
   }
-  print_results("kyber_keypair: ", t, NTESTS);
+  print_results("mlkem_keypair: ", t, NTESTS);
 
   for(i=0;i<NTESTS;i++) {
     t[i] = cpucycles();
     crypto_kem_enc_derand(ct, key, pk, coins32);
   }
-  print_results("kyber_encaps_derand: ", t, NTESTS);
+  print_results("mlkem_encaps_derand: ", t, NTESTS);
 
   for(i=0;i<NTESTS;i++) {
     t[i] = cpucycles();
     crypto_kem_enc(ct, key, pk);
   }
-  print_results("kyber_encaps: ", t, NTESTS);
+  print_results("mlkem_encaps: ", t, NTESTS);
 
   for(i=0;i<NTESTS;i++) {
     t[i] = cpucycles();
     crypto_kem_dec(key, ct, sk);
   }
-  print_results("kyber_decaps: ", t, NTESTS);
+  print_results("mlkem_decaps: ", t, NTESTS);
 
   return 0;
 }

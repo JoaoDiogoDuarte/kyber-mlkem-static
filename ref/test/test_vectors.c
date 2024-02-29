@@ -67,7 +67,7 @@ int main(void)
     }
 
     // Decapsulation of invalid (random) ciphertexts
-    randombytes(ct, KYBER_CIPHERTEXTBYTES); 
+    randombytes(ct, MLKEM_CIPHERTEXTBYTES); 
     crypto_kem_dec(key_a, ct, sk);
     printf("Pseudorandom shared Secret A: ");
     for(j=0;j<CRYPTO_BYTES;j++)

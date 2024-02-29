@@ -1,9 +1,9 @@
 # Kyber
 
-[![Build Status](https://travis-ci.org/pq-crystals/kyber.svg?branch=master)](https://travis-ci.org/pq-crystals/kyber) 
-[![Coverage Status](https://coveralls.io/repos/github/pq-crystals/kyber/badge.svg?branch=master)](https://coveralls.io/github/pq-crystals/kyber?branch=master)
+[![Build Status](https://travis-ci.org/pq-crystals/mlkem.svg?branch=master)](https://travis-ci.org/pq-crystals/mlkem) 
+[![Coverage Status](https://coveralls.io/repos/github/pq-crystals/mlkem/badge.svg?branch=master)](https://coveralls.io/github/pq-crystals/mlkem?branch=master)
 
-This repository contains the official reference implementation of the [Kyber](https://www.pq-crystals.org/kyber/) key encapsulation mechanism, 
+This repository contains the official reference implementation of the [Kyber](https://www.pq-crystals.org/mlkem/) key encapsulation mechanism, 
 and an optimized implementation for x86 CPUs supporting the AVX2 instruction set. 
 Kyber has been selected for standardization in [round 3](https://csrc.nist.gov/Projects/post-quantum-cryptography/round-3-submissions) 
 of the [NIST PQC](https://csrc.nist.gov/projects/post-quantum-cryptography) standardization project.
@@ -39,13 +39,13 @@ make
 ```
 This produces the executables
 ```sh
-test/test_kyber$ALG
+test/test_mlkem$ALG
 test/test_vectors$ALG
 test/test_speed$ALG
 ```
 where `$ALG` ranges over the parameter sets 512, 768, 1024.
 
-* `test_kyber$ALG` tests 1000 times to generate keys, encapsulate a random key and correctly decapsulate it again. 
+* `test_mlkem$ALG` tests 1000 times to generate keys, encapsulate a random key and correctly decapsulate it again. 
   Also, the program tests that the keys cannot correctly be decapsulated using a random secret key 
   or a ciphertext where a single random byte was randomly distorted in order to test for trivial failures of the CCA security. 
   The program will abort with an error message and return 1 if there was an error. 
@@ -76,12 +76,12 @@ make shared
 ```
 For example in the directory `ref/` of the reference implementation, this produces the libraries
 ```sh
-libpqcrystals_kyber$ALG_ref.so
+libpqcrystals_mlkem$ALG_ref.so
 ```
 for all parameter sets `$ALG`, and the required symmetric crypto libraries
 ```
 libpqcrystals_aes256ctr_ref.so
 libpqcrystals_fips202_ref.so
 ```
-All global symbols in the libraries lie in the namespaces `pqcrystals_kyber$ALG_ref`, `libpqcrystals_aes256ctr_ref` and `libpqcrystals_fips202_ref`. Hence it is possible to link a program against all libraries simultaneously and obtain access to all implementations for all parameter sets. The corresponding API header file is `ref/api.h`, which contains prototypes for all API functions and preprocessor defines for the key and signature lengths.
+All global symbols in the libraries lie in the namespaces `pqcrystals_mlkem$ALG_ref`, `libpqcrystals_aes256ctr_ref` and `libpqcrystals_fips202_ref`. Hence it is possible to link a program against all libraries simultaneously and obtain access to all implementations for all parameter sets. The corresponding API header file is `ref/api.h`, which contains prototypes for all API functions and preprocessor defines for the key and signature lengths.
 
