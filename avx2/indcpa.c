@@ -11,7 +11,7 @@
 #include "cbd.h"
 #include "rejsample.h"
 #include "symmetric.h"
-#include "randombytes.h"
+#include "superrandombytes.h"
 
 /*************************************************
 * Name:        pack_pk

@@ -1,3 +1,5 @@
 tvecs1024
 tvecs512
 tvecs768
+*.o
+*.so

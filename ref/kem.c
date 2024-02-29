@@ -6,7 +6,7 @@
 #include "indcpa.h"
 #include "verify.h"
 #include "symmetric.h"
-#include "randombytes.h"
+#include "superrandombytes.h"
 /*************************************************
 * Name:        crypto_kem_keypair_derand
 *
@@ -51,7 +51,7 @@ int crypto_kem_keypair(uint8_t *pk,
                        uint8_t *sk)
 {
   uint8_t coins[2*MLKEM_SYMBYTES];
-  randombytes(coins, 2*MLKEM_SYMBYTES);
+  superrandombytes(coins, 2*MLKEM_SYMBYTES);
   crypto_kem_keypair_derand(pk, sk, coins);
   return 0;
 }
@@ -115,7 +115,7 @@ int crypto_kem_enc(uint8_t *ct,
                    const uint8_t *pk)
 {
   uint8_t coins[MLKEM_SYMBYTES];
-  randombytes(coins, MLKEM_SYMBYTES);
+  superrandombytes(coins, MLKEM_SYMBYTES);
   crypto_kem_enc_derand(ct, ss, pk, coins);
   return 0;
 }

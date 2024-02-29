@@ -8,105 +8,27 @@ RM = /bin/rm
 
 SOURCES = kem.c indcpa.c polyvec.c poly.c fq.S shuffle.S ntt.S invntt.S \
   basemul.S consts.c rejsample.c cbd.c verify.c
-SOURCESKECCAK   = $(SOURCES) fips202.c fips202x4.c symmetric-shake.c \
-  keccak4x/KeccakP-1600-times4-SIMD256.o
+SOURCESKECCAK   = $(SOURCES) fips202.c fips202x4.c symmetric-shake.c symmetric-shake.c 
 HEADERS = params.h align.h kem.h indcpa.h polyvec.h poly.h reduce.h fq.inc shuffle.inc \
-  ntt.h consts.h rejsample.h cbd.h verify.h symmetric.h randombytes.h
-HEADERSKECCAK   = $(HEADERS) fips202.h fips202x4.h
+  ntt.h consts.h rejsample.h cbd.h verify.h symmetric.h superrandombytes.h
+HEADERSKECCAK   = $(HEADERS) fips202.h fips202x4.h keccak4x/KeccakP-1600-times4-SnP.h keccak4x/KeccakP-1600-unrolling.macros keccak4x/KeccakP-SIMD256-config.h keccak4x/KeccakP-align.h keccak4x/KeccakP-brg_endian.h
 
-.PHONY: all shared clean
+.PHONY: all
 
-all: \
-  test/test_mlkem512 \
-  test/test_mlkem768 \
-  test/test_mlkem1024 \
-  test/test_vectors512 \
-  test/test_vectors768 \
-  test/test_vectors1024 \
-  speed
+all: static
 
-speed: \
-  test/test_speed512 \
-  test/test_speed768 \
-  test/test_speed1024 \
+static: libpqcrystals_mlkem768_avx2.a
 
-shared: \
-  libpqcrystals_mlkem512_avx2.so \
-  libpqcrystals_mlkem768_avx2.so \
-  libpqcrystals_mlkem1024_avx2.so \
-  libpqcrystals_fips202_ref.so \
-  libpqcrystals_fips202x4_avx2.so \
-
-keccak4x/KeccakP-1600-times4-SIMD256.o: \
-  keccak4x/KeccakP-1600-times4-SIMD256.c \
-  keccak4x/KeccakP-1600-times4-SnP.h \
-  keccak4x/KeccakP-1600-unrolling.macros \
-  keccak4x/KeccakP-SIMD256-config.h \
-  keccak4x/KeccakP-align.h \
-  keccak4x/KeccakP-brg_endian.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-libpqcrystals_fips202_ref.so: fips202.c fips202.h
-	$(CC) -shared -fPIC $(CFLAGS) -o $@ $<
-
-libpqcrystals_fips202x4_avx2.so: fips202x4.c fips202x4.h \
-  keccak4x/KeccakP-1600-times4-SIMD256.c \
-  keccak4x/KeccakP-1600-times4-SnP.h \
-  keccak4x/KeccakP-1600-unrolling.macros \
-  keccak4x/KeccakP-SIMD256-config.h \
-  keccak4x/KeccakP-align.h \
-  keccak4x/KeccakP-brg_endian.h
-	$(CC) -shared -fPIC $(CFLAGS) -o $@ $< keccak4x/KeccakP-1600-times4-SIMD256.c
-
-libpqcrystals_mlkem512_avx2.so: $(SOURCES) $(HEADERS) symmetric-shake.c
-	$(CC) -shared -fpic $(CFLAGS) -DMLKEM_K=2 $(SOURCES) \
-	  symmetric-shake.c -o libpqcrystals_mlkem512_avx2.so
-
-libpqcrystals_mlkem768_avx2.so: $(SOURCES) $(HEADERS) symmetric-shake.c
-	$(CC) -shared -fpic $(CFLAGS) -DMLKEM_K=3 $(SOURCES) \
-	  symmetric-shake.c -o libpqcrystals_mlkem768_avx2.so
-
-libpqcrystals_mlkem1024_avx2.so: $(SOURCES) $(HEADERS) symmetric-shake.c
-	$(CC) -shared -fpic $(CFLAGS) -DMLKEM_K=4 $(SOURCES) \
-	  symmetric-shake.c -o libpqcrystals_mlkem1024_avx2.so
-
-test/test_mlkem512: $(SOURCESKECCAK) $(HEADERSKECCAK) test/test_mlkem.c randombytes.c
-	$(CC) $(CFLAGS) -DMLKEM_K=2 $(SOURCESKECCAK) randombytes.c test/test_mlkem.c -o $@
-
-test/test_mlkem768: $(SOURCESKECCAK) $(HEADERSKECCAK) test/test_mlkem.c randombytes.c
-	$(CC) $(CFLAGS) -DMLKEM_K=3 $(SOURCESKECCAK) randombytes.c test/test_mlkem.c -o $@
-
-test/test_mlkem1024: $(SOURCESKECCAK) $(HEADERSKECCAK) test/test_mlkem.c randombytes.c
-	$(CC) $(CFLAGS) -DMLKEM_K=4 $(SOURCESKECCAK) randombytes.c test/test_mlkem.c -o $@
-
-test/test_vectors512: $(SOURCESKECCAK) $(HEADERSKECCAK) test/test_vectors.c
-	$(CC) $(CFLAGS) -DMLKEM_K=2 $(SOURCESKECCAK) test/test_vectors.c -o $@
-
-test/test_vectors768: $(SOURCESKECCAK) $(HEADERSKECCAK) test/test_vectors.c
-	$(CC) $(CFLAGS) -DMLKEM_K=3 $(SOURCESKECCAK) test/test_vectors.c -o $@
-
-test/test_vectors1024: $(SOURCESKECCAK) $(HEADERSKECCAK) test/test_vectors.c
-	$(CC) $(CFLAGS) -DMLKEM_K=4 $(SOURCESKECCAK) test/test_vectors.c -o $@
-
-test/test_speed512: $(SOURCESKECCAK) $(HEADERSKECCAK) test/cpucycles.h test/cpucycles.c test/speed_print.h test/speed_print.c test/test_speed.c randombytes.c
-	$(CC) $(CFLAGS) -DMLKEM_K=2 $(SOURCESKECCAK) randombytes.c test/cpucycles.c test/speed_print.c test/test_speed.c -o $@
-
-test/test_speed768: $(SOURCESKECCAK) $(HEADERSKECCAK) test/cpucycles.h test/cpucycles.c test/speed_print.h test/speed_print.c test/test_speed.c randombytes.c
-	$(CC) $(CFLAGS) -DMLKEM_K=3 $(SOURCESKECCAK) randombytes.c test/cpucycles.c test/speed_print.c test/test_speed.c -o $@
-
-test/test_speed1024: $(SOURCESKECCAK) $(HEADERSKECCAK) test/cpucycles.h test/cpucycles.c test/speed_print.h test/speed_print.c test/test_speed.c randombytes.c
-	$(CC) $(CFLAGS) -DMLKEM_K=4 $(SOURCESKECCAK) randombytes.c test/cpucycles.c test/speed_print.c test/test_speed.c -o $@
-
+#--
+_OBJECTS = $(SOURCESKECCAK:%.c=%.o)
+OBJECTS = $(_OBJECTS:%.S=%.o)
+libpqcrystals_mlkem768_avx2.a: $(SOURCESKECCAK) $(HEADERSKECCAK) superrandombytes.h symmetric-shake.c
+	rm -f *.o
+	rm -f *.a
+	$(CC) -fPIC $(CFLAGS) -DKYBER_K=3 -c $(SOURCESKECCAK) keccak4x/KeccakP-1600-times4-SIMD256.c symmetric-shake.c 
+	ar -rc $@ $(OBJECTS) KeccakP-1600-times4-SIMD256.o
+#--
 
 clean:
 	-$(RM) -rf *.o *.a *.so
-	-$(RM) -rf test/test_mlkem512
-	-$(RM) -rf test/test_mlkem768
-	-$(RM) -rf test/test_mlkem1024
-	-$(RM) -rf test/test_vectors512
-	-$(RM) -rf test/test_vectors768
-	-$(RM) -rf test/test_vectors1024
-	-$(RM) -rf test/test_speed512
-	-$(RM) -rf test/test_speed768
-	-$(RM) -rf test/test_speed1024
 	-$(RM) -rf keccak4x/KeccakP-1600-times4-SIMD256.o
