@@ -6,7 +6,7 @@
 #include "poly.h"
 #include "ntt.h"
 #include "symmetric.h"
-#include "randombytes.h"
+#include "superrandombytes.h"
 
 /*************************************************
 * Name:        pack_pk

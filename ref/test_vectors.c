@@ -1,11 +1,11 @@
-/* Deterministic randombytes by Daniel J. Bernstein */
+/* Deterministic superrandombytes by Daniel J. Bernstein */
 /* taken from SUPERCOP (https://bench.cr.yp.to)     */
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include "kem.h"
-#include "randombytes.h"
+#include "superrandombytes.h"
 
 #define NTESTS 10000
 
@@ -38,7 +38,7 @@ static void surf(void)
   }
 }
 
-void randombytes(uint8_t *x,size_t xlen)
+void superrandombytes(uint8_t *x,size_t xlen)
 {
   while (xlen > 0) {
     if (!outleft) {

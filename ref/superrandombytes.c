@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "randombytes.h"
+#include "superrandombytes.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -19,7 +19,7 @@
 #endif
 
 #ifdef _WIN32
-void randombytes(uint8_t *out, size_t outlen) {
+void superrandombytes(uint8_t *out, size_t outlen) {
   HCRYPTPROV ctx;
   size_t len;
 
@@ -39,7 +39,7 @@ void randombytes(uint8_t *out, size_t outlen) {
     abort();
 }
 #elif defined(__linux__) && defined(SYS_getrandom)
-void randombytes(uint8_t *out, size_t outlen) {
+void superrandombytes(uint8_t *out, size_t outlen) {
   ssize_t ret;
 
   while(outlen > 0) {
@@ -54,7 +54,7 @@ void randombytes(uint8_t *out, size_t outlen) {
   }
 }
 #else
-void randombytes(uint8_t *out, size_t outlen) {
+void superrandombytes(uint8_t *out, size_t outlen) {
   static int fd = -1;
   ssize_t ret;
 
