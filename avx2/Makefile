@@ -13,7 +13,7 @@ HEADERS = params.h align.h kem.h indcpa.h polyvec.h poly.h reduce.h fq.inc shuff
   ntt.h consts.h rejsample.h cbd.h verify.h symmetric.h superrandombytes.h
 HEADERSKECCAK   = $(HEADERS) fips202.h fips202x4.h keccak4x/KeccakP-1600-times4-SnP.h keccak4x/KeccakP-1600-unrolling.macros keccak4x/KeccakP-SIMD256-config.h keccak4x/KeccakP-align.h keccak4x/KeccakP-brg_endian.h
 
-.PHONY: all
+.PHONY: all static
 
 all: static
 
