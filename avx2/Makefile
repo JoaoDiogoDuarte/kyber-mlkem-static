@@ -1,6 +1,5 @@
 CC ?= /usr/bin/cc
-CFLAGS += -Wall -Wextra -Wpedantic -Wmissing-prototypes -Wredundant-decls \
-  -Wshadow -Wpointer-arith -mavx2 -mbmi2 -mpopcnt \
+CFLAGS += -mavx2 -mbmi2 -mpopcnt \
   -march=native -mtune=native -O3 -fomit-frame-pointer -z noexecstack
 NISTFLAGS += -Wno-unused-result -mavx2 -mbmi2 -mpopcnt \
   -march=native -mtune=native -O3 -fomit-frame-pointer
@@ -12,10 +11,10 @@ HEADERS = align.h hash.h api.h KeccakP-1600-AVX2.h  KeccakP-1600-SnP.h  KeccakSp
 
 .PHONY: all clean
 
-all: sha3.so
+all: static
 
-sha3.so: ${SOURCES} ${HEADERS}
-	$(CC) -shared -fPIC $(CFLAGS) $(SOURCES) -o $@
+static: ${SOURCES} ${HEADERS}
+	$(CC) $(CFLAGS) -c $(SOURCES) 
 
 clean:
 	-$(RM) -rf *.o *.a *.so
